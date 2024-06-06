@@ -1,7 +1,7 @@
 ---
-title: "Example Manuscript Template for a Data Analysis Project"
+title: "Working Title: Predicting Customer Behavior Using a Portuguese Financial Institution Dataset "
 subtitle: ""
-author: Andreas Handel
+author: Antonio Flores
 date: "`r Sys.Date()`"
 format:
   docx:
@@ -27,8 +27,7 @@ library(knitr)
 
 
 # Summary/Abstract
-_Write a summary of your project._
-
+This project will seek to identify a model for predicting consumer financial behavior using a dataset from a Portuguese Bank. 
 
 {{< pagebreak >}}
 
@@ -36,17 +35,22 @@ _Write a summary of your project._
 # Introduction 
 
 ## General Background Information
-_Provide enough background on your topic that others can understand the why and how of your analysis_ 
+Providing businesses with a model that will allow prioritization of consumers could save time and allow for a more accurate use of resources.   
 
 ## Description of data and data source
-_Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section._
+The data was donated on 2/13/2012. It was collected from phone call marketing campaigns performed by a Portuguese banking institution.I have accessed this data from the UC Irvine Machine Learning Repository.
+
+There are 45,212 records, and includes: age, marital status, job, education,details related to the phone call, as well as answers related to questions about past credit history. Additionally, the classification variable is whether or not the person subscribed to a term deposit. There are 16 features in total.
 
 ## Questions/Hypotheses to be addressed
-_State the research questions you plan to answer with this analysis._
 
-To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above and have the right bibtex key. Then you can include like this:
+The research question I plan to address with my analysis is which features or combination of features are the best predictors of consumers making a deposit. The desired output of this analysis is a model which allows a financial institution to better prioritize/make decisions regarding future marketing campaigns. I don't currently have specific predictors in mind to begin with, as I plan to test all of the available features while also looking at some combinations or concatenation of features.
 
-Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a].
+
+
+_To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above and have the right bibtex key. Then you can include like this:_
+
+_Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a]._
 
 
 
@@ -55,7 +59,7 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 
 # Methods 
 
-_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
+I want to first perform some EDA to identify if there are any variables with extreme variation or conversely if there some patterns that can be seen already. Then I will test for correllation between different features and proceed from there.
 
 
 ## Schematic of workflow
@@ -67,18 +71,53 @@ We store those figures in the `assets` folder.
 #| label: fig-schematic
 #| fig-cap: "A figure that is manually generated and shows some overview/schematic. This has nothing to do with the data, it's just a random one from one of our projects I found and placed here."
 #| echo: FALSE
-knitr::include_graphics(here("assets","antigen-recognition.png"))
 ```
 
 
 
 
 ## Data aquisition
-_As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next._
-
+Data retrieved from UCI ML Repository
 
 ## Data import and cleaning
-_Write code that reads in the file and cleans it so it's ready for analysis. Since this will be fairly long code for most datasets, it might be a good idea to have it in one or several R scripts. If that is the case, explain here briefly what kind of cleaning/processing you do, and provide more details and well documented code somewhere (e.g. as supplement in a paper). All materials, including files that contain code, should be commented well so everyone can follow along._
+
+### Reading in the Data
+
+raw = read.csv("C:/Users/Client/Documents/Flores-P2-Project/bank-full.csv",header = TRUE,
+                  sep=";")
+head(raw)
+
+
+```{r}
+#| label: tbl-summarytable1
+#| tbl-cap: "Data Snapshot"
+#| echo: FALSE
+raw=read.csv("../../bank-full.csv", header = TRUE, sep=";")
+head(raw)
+```
+
+### Dimensions:
+dim(raw)
+
+```{r}
+#| label: tbl-summarytable2
+#| tbl-cap: "Data Dimensions"
+#| echo: FALSE
+dim(raw)
+```
+
+
+### Describing raw data
+str(raw)
+
+```{r}
+#| label: tbl-summarytable3
+#| tbl-cap: "Data Description"
+#| echo: FALSE
+str(raw)
+```
+
+
 
 
 ## Statistical analysis
