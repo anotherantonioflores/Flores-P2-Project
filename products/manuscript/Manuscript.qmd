@@ -12,14 +12,7 @@ bibliography: ../../assets/dataanalysis-references.bib
 csl: ../../assets/apa.csl
 ---
 
-The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. 
-You don't need to have exactly these sections, but the content covering those sections should be addressed.
-
-This uses MS Word as output format. [See here](https://quarto.org/docs/output-formats/ms-word.html) for more information. You can switch to other formats, like html or pdf. See [the Quarto documentation](https://quarto.org/) for other formats.
-
-
 ```{r, echo=FALSE, message=FALSE}
-# load a few R packages
 library(here)
 library(knitr)
 ```
@@ -48,9 +41,6 @@ The research question I plan to address with my analysis is which features or co
 
 
 
-_To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above and have the right bibtex key. Then you can include like this:_
-
-_Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a]._
 
 
 
@@ -59,13 +49,11 @@ _Examples of reproducible research projects can for instance be found in [@mckay
 
 # Methods 
 
-I want to first perform some EDA to identify if there are any variables with extreme variation or conversely if there some patterns that can be seen already. Then I will test for correllation between different features and proceed from there.
+I want to first perform some EDA to identify if there are any variables with extreme variation or conversely if there some patterns that can be seen already. Then I will test for correlation between different features and proceed from there.
 
 
 ## Schematic of workflow
 
-Sometimes you might want to show a schematic diagram/figure that was not created with code (if you can do it with code, do it). @fig-schematic is an example of some - completely random/unrelated - schematic that was generated with Biorender.
-We store those figures in the `assets` folder.
 
 ```{r}
 #| label: fig-schematic
@@ -83,16 +71,13 @@ Data retrieved from UCI ML Repository
 
 ### Reading in the Data
 
-raw = read.csv("C:/Users/Client/Documents/Flores-P2-Project/bank-full.csv",header = TRUE,
-                  sep=";")
-head(raw)
-
 
 ```{r}
 #| label: tbl-summarytable1
 #| tbl-cap: "Data Snapshot"
 #| echo: FALSE
-raw=read.csv("../../bank-full.csv", header = TRUE, sep=";")
+data_location <- here::here("data","raw-data","bank-full.csv")
+raw=read.csv(data_location, header = TRUE, sep=";")
 head(raw)
 ```
 
@@ -121,7 +106,6 @@ str(raw)
 
 
 ## Statistical analysis
-_Explain anything related to your statistical analyses._
 
 
 {{< pagebreak >}}
@@ -131,18 +115,15 @@ _Explain anything related to your statistical analyses._
 
 ## Exploratory/Descriptive analysis
 
-_Use a combination of text/tables/figures to explore and describe your data. Show the most important descriptive results here. Additional ones should go in the supplement. Even more can be in the R and Quarto files that are part of your project._
-
 
 @tbl-summarytable shows a summary of the data.
 
-Note the loading of the data providing a **relative** path using the `../../` notation. (Two dots means a folder up). You never want to specify an **absolute** path like `C:\ahandel\myproject\results\` because if you share this with someone, it won't work for them since they don't have that path. You can also use the `here` R package to create paths. See examples of that below. I generally recommend the `here` package.
 
 ```{r}
 #| label: tbl-summarytable
 #| tbl-cap: "Data summary table."
 #| echo: FALSE
-resulttable=readRDS("../../results/tables/summarytable.rds")
+resulttable=readRDS("../../results/tables/summarytable1.rds")
 knitr::kable(resulttable)
 ```
 
@@ -150,22 +131,20 @@ knitr::kable(resulttable)
 
 ## Basic statistical analysis
 
-_To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
 
 
-@fig-result shows a scatterplot figure produced by one of the R scripts.
+@fig-result shows a scatter plot figure produced by one of the R scripts.
 
 ```{r}
 #| label: fig-result
-#| fig-cap: "Height and weight stratified by gender."
+#| fig-cap: "Age and bank account balance stratified by marital status"
 #| echo: FALSE
-knitr::include_graphics(here("results","figures","height-weight-stratified.png"))
+knitr::include_graphics(here("results","figures","age-balance-stratified.png"))
 ```
 
 
 ## Full analysis
 
-_Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here._
 
 Example @tbl-resulttable2 shows a summary of a linear model fit.
 
@@ -173,8 +152,8 @@ Example @tbl-resulttable2 shows a summary of a linear model fit.
 #| label: tbl-resulttable2
 #| tbl-cap: "Linear model fit table."
 #| echo: FALSE
-resulttable2 = readRDS(here("results","tables","resulttable2.rds"))
-knitr::kable(resulttable2)
+#resulttable2 = readRDS(here("results","tables","resulttable2.rds"))
+#knitr::kable(resulttable2)
 ```
 
 
@@ -184,21 +163,11 @@ knitr::kable(resulttable2)
 # Discussion
 
 ## Summary and Interpretation
-_Summarize what you did, what you found and what it means._
+
 
 ## Strengths and Limitations
-_Discuss what you perceive as strengths and limitations of your analysis._
 
 ## Conclusions
-_What are the main take-home messages?_
-
-_Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end_
-
-This paper [@leek2015] discusses types of analyses. 
-
-These papers [@mckay2020; @mckay2020a] are good examples of papers published using a fully reproducible setup similar to the one shown in this template. 
-
-Note that this cited reference will show up at the end of the document, the reference formatting is determined by the CSL file specified in the YAML header. Many more style files for almost any journal [are available](https://www.zotero.org/styles). You also specify the location of your bibtex reference file in the YAML. You can call your reference file anything you like.
 
 
 {{< pagebreak >}}

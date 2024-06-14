@@ -1,5 +1,4 @@
 # figures
 
 Folder for all figures.
-
-You can create further sub-folders if that makes sense.
+Generated R and Quarto found in the code folder
