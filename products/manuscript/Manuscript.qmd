@@ -33,7 +33,10 @@ Providing businesses with a model that will allow prioritization of consumers co
 ## Description of data and data source
 The data was donated on 2/13/2012. It was collected from phone call marketing campaigns performed by a Portuguese banking institution.I have accessed this data from the UC Irvine Machine Learning Repository.
 
-There are 45,212 records, and includes: age, marital status, job, education,details related to the phone call, as well as answers related to questions about past credit history. Additionally, the classification variable is whether or not the person subscribed to a term deposit. There are 16 features in total.
+There are 45,212 records, and includes: age, marital status, job, education,details related to the phone call, as well as answers related to questions about past credit history. Additionally, the classification variable is whether or not the person subscribed to a term deposit. There are 17 features in total.
+
+Among the variables are a handful of features relating to the marketing campaign itself. For example, included are the day, month, and duration of the call, the number of contacts performed during the campaign (campaign), the number of days since the client was last contacted (pdays), the number of contacts performed before this campaign (previous), and finally the outcome of precious marketing campaigns (poutcome).
+
 
 ## Questions/Hypotheses to be addressed
 
@@ -116,35 +119,42 @@ str(raw)
 ## Exploratory/Descriptive analysis
 
 
-@tbl-summarytable shows a summary of the data.
 
+
+@fig-result shows a boxplot figure comparing balance levels across job types.
 
 ```{r}
-#| label: tbl-summarytable
-#| tbl-cap: "Data summary table."
+#| label: fig-result
+#| fig-cap: "Job type and bank account balance"
 #| echo: FALSE
-resulttable=readRDS("../../results/tables/summarytable1.rds")
-knitr::kable(resulttable)
+knitr::include_graphics(here("results","figures","job-balance-scatter.png"))
 ```
 
 
 
-## Basic statistical analysis
-
-
-
-@fig-result shows a scatter plot figure produced by one of the R scripts.
+@fig-result1 shows a bar chart showing education levels of the data.
 
 ```{r}
-#| label: fig-result
+#| label: fig-result1
+#| fig-cap: "Education level"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","education-barchart.png"))
+```
+
+
+
+
+@fig-result2 shows a scatter plot figure produced by one of the R scripts.
+
+```{r}
+#| label: fig-result2
 #| fig-cap: "Age and bank account balance stratified by marital status"
 #| echo: FALSE
 knitr::include_graphics(here("results","figures","age-balance-stratified.png"))
 ```
 
 
-## Full analysis
-
+## Basic statistical analysis
 
 Example @tbl-resulttable2 shows a summary of a linear model fit.
 
@@ -155,6 +165,14 @@ Example @tbl-resulttable2 shows a summary of a linear model fit.
 #resulttable2 = readRDS(here("results","tables","resulttable2.rds"))
 #knitr::kable(resulttable2)
 ```
+
+
+
+
+## Full analysis
+
+
+
 
 
 {{< pagebreak >}}

@@ -17,34 +17,16 @@ mydata <- readRDS(data_location)
 
 ############################
 #### First model fit
-# fit linear model using height as outcome, weight as predictor
+# fit linear model using balance as outcome, age as predictor
 
-lmfit1 <- lm(Height ~ Weight, mydata)  
+lmfit1 <- lm(balance ~ age, mydata)  
 
 # place results from fit into a data frame with the tidy function
 lmtable1 <- broom::tidy(lmfit1)
 
 #look at fit results
 print(lmtable1)
-
+summary(lmfit1)
 # save fit results table  
 table_file1 = here("results", "tables", "resulttable1.rds")
 saveRDS(lmtable1, file = table_file1)
-
-############################
-#### Second model fit
-# fit linear model using height as outcome, weight and gender as predictor
-
-lmfit2 <- lm(Height ~ Weight + Gender, mydata)  
-
-# place results from fit into a data frame with the tidy function
-lmtable2 <- broom::tidy(lmfit2)
-
-#look at fit results
-print(lmtable2)
-
-# save fit results table  
-table_file2 = here("results", "tables", "resulttable2.rds")
-saveRDS(lmtable2, file = table_file2)
-
-  

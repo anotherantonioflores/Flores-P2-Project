@@ -17,16 +17,17 @@ library(dplyr)
 library(skimr)
 library(ggplot2)
 library(scales)
+library(tidyr)
+library(forcats)
 ```
 
 
-Load the data.
+Loading the data.
 
 ```{r}
 data_location <- here::here("data","processed-data","processeddata1.rds")
 mydata <- readRDS(data_location)
 ```
-
 
 
 
@@ -100,16 +101,67 @@ ggsave(filename = figure_file, plot=p5)
 Now, some barplots examining job types, education level, and marital status.
 
 ```{r}
-mydata |>
-  ggplot(aes(job))+
-  geom_bar()
+p6 = mydata |>
+  ggplot(aes(x=fct_infreq(job)))+
+  geom_bar() +
+  coord_flip()
 
-mydata |>
+p7 = mydata |>
   ggplot(aes(education))+
   geom_bar()
 
-mydata |>
+p8 = mydata |>
   ggplot(aes(marital))+
   geom_bar()
+
+
+p6
+p7
+p8
+
+figure_file = here("results", "figures", "job-barchart.png")
+ggsave(filename = figure_file, plot=p6) 
+figure_file = here("results", "figures", "education-barchart.png")
+ggsave(filename = figure_file, plot=p7) 
+figure_file = here("results", "figures", "marital-barchart.png")
+ggsave(filename = figure_file, plot=p8) 
+```
+
+Quick look at positive cases vs negative cases of outcome variable (y_termSubscribed)
+```{r}
+plot(mydata$y_termSubscribed)
+```
+
+
+Lets see how the age demographic differs between the population that subscribed to a term (y_termsubscribed=yes) vs the general population.
+
+```{r}
+p9 = mydata |>
+  filter(y_termSubscribed == "yes") |>
+  ggplot(aes(age))+
+  geom_bar()+
+  labs(title = "yes")
+
+p10 = mydata |>
+  ggplot(aes(age))+
+  geom_bar()+
+  labs(title = "yes/no")
+
+p9
+p10
+```
+
+
+Now, lets assess the highest job categories that are labeled as subscribing to a term.
+
+```{r}
+p11 = mydata |>
+  filter(y_termSubscribed == "yes") |>
+  ggplot(aes(x=fct_infreq(job)))+
+  geom_bar()+
+  coord_flip()+
+  labs(title = "Term Subscribed = yes")
+
+p11
 ```
 

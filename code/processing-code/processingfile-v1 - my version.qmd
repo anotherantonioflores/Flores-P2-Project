@@ -11,11 +11,11 @@ output: html_document
 The following packages are needed for this data processing
 
 ```{r}
-library(readxl) #for loading Excel files
-library(dplyr) #for data processing/cleaning
-library(tidyr) #for data processing/cleaning
-library(skimr) #for nice visualization of data 
-library(here) #to set paths
+library(readxl) 
+library(dplyr) 
+library(tidyr) 
+library(skimr) 
+library(here) 
 ```
 
 
@@ -29,7 +29,9 @@ rawdata <- read.csv(data_location, header = TRUE, sep=";")
 
 # Check data
 
-Examning metadata by accessing the codebook
+Examining metadata by accessing the codebook.
+This codebook was taken directly from the data repository housing the chosen dataset.
+The decision was made to keep this in a separate xlsx file from the dataset so that the dataset could remain in the identical form in which it was sourced (CSV format).
 
 ```{r}
 codebook_location <- 
@@ -52,7 +54,8 @@ skimr::skim(rawdata)
 
 # Cleaning the data
 
-We are mainly converting character variables into factors so we can do some categorical analysis
+We are mainly converting character variables into factors so we can do some categorical analysis.
+I had initially included converting months to a numeric variable but realized that it was fine as a factor variable.
 ```{r}
 d1 = rawdata |> 
   mutate(job = as.factor(job)) |>
@@ -66,6 +69,9 @@ d1 = rawdata |>
   mutate(month = as.factor(month)) |>
   mutate(poutcome = as.factor(poutcome)) |>
   mutate(y = as.factor(y))
+
+
+colnames(d1)[17] <- "y_termSubscribed"
 
 
 summary(d1)
