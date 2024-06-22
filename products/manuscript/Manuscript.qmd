@@ -195,14 +195,14 @@ knitr::include_graphics(here("results","figures","jobs-percent-yes.png"))
 
 ## Basic statistical analysis
 
-Example @tbl-resulttable2 shows a summary of a linear model fit.
+Example @tbl-resulttable4 shows a summary of a linear model fit.
 
 ```{r}
-#| label: tbl-resulttable2
-#| tbl-cap: "Linear model fit table."
+#| label: tbl-resulttable4
+#| tbl-cap: "Logistic regression model fit table."
 #| echo: FALSE
-#resulttable2 = readRDS(here("results","tables","resulttable2.rds"))
-#knitr::kable(resulttable2)
+resulttable4 = readRDS(here("results","tables","resulttable4.rds"))
+knitr::kable(resulttable4)
 ```
 
 

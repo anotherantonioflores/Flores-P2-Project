@@ -147,8 +147,15 @@ p10 = mydata |>
 p9
 p10
 
+figure_file = here("results", "figures", "yes-age.png")
+ggsave(filename = figure_file, plot=p9) 
 
-#Comparing how age daa compares from those who subscribed to a term deposit and those
+figure_file = here("results", "figures", "yes-no-age.png")
+ggsave(filename = figure_file, plot=p10) 
+
+
+
+#Comparing how age data compares from those who subscribed to a term deposit and those
 #that did not
 ggplot(data=mydata)+
   geom_bar(mapping =aes(x=age))+
@@ -233,6 +240,8 @@ p12= mydata |>
   labs(title = "yes")
 
 p12
+figure_file = here("results", "figures", "days-yes.png")
+ggsave(filename = figure_file, plot=p12) 
 ```
 
 
@@ -254,15 +263,24 @@ pctjob = posjob %>%
 colnames(pctjob)[3] <- "numofYES"
 colnames(pctjob)[4] <- "numofBOTH"
 
-ggplot(pctjob, aes(x=reorder(job, numofYES), y=numofYES, fill=numofYES))+
+
+
+p13 = ggplot(pctjob, aes(x=reorder(job, numofYES), y=numofYES, fill=numofYES))+
   geom_bar(stat="identity")+
   coord_flip()
   
-ggplot(pctjob, aes(x=reorder(job, (numofYES/numofBOTH)), y=(numofYES/numofBOTH)))+
+p14 = ggplot(pctjob, aes(x=reorder(job, (numofYES/numofBOTH)), y=(numofYES/numofBOTH), fill=numofYES))+
   geom_bar(stat="identity")+
   coord_flip()
 
+figure_file = here("results", "figures", "jobs-count-yes.png")
+ggsave(filename = figure_file, plot=p13) 
+figure_file = here("results", "figures", "jobs-percent-yes.png")
+ggsave(filename = figure_file, plot=p14) 
 
+
+p13
+p14
 ```
 On the first figure, we can see that jobs with the most positive outcomes are management, technician, and blue-collar, but on the second chart we can see that the job-types with the
 highest percentages are 'student', 'retired', and 'unemployed.' There appears to be a noticable different between the total number of positive cases, and the job types which are most commonly recording positive cases.

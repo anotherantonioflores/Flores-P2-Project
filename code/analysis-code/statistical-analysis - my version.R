@@ -74,6 +74,11 @@ lm(y_termSubscribed ~ age + job + education + day + month, data = mydata) %>%
 mylogit = glm(y_termSubscribed ~ job + education, data=mydata, family="binomial")
 summary(mylogit)
 
+logittable1 <- broom::tidy(mylogit)
+
+table_file2 = here("results", "tables", "resulttable4.rds")
+saveRDS(logittable1, file = table_file2)
+
 #Factors that stand out: For jobs, it looks like 'retired', 'student', and 'unemployed' lead to 
 #greater odds of subscribing to a deposit.
 #For education, 'secondary', 'tertiary', and 'unknown' all have better odds than 'primary'
