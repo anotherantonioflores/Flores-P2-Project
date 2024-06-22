@@ -11,6 +11,8 @@ output: html_document
 The following packages are needed for this data processing
 
 ```{r}
+#| echo: false
+#| output: false
 library(readxl) 
 library(dplyr) 
 library(tidyr) 
@@ -68,7 +70,8 @@ d1 = rawdata |>
   mutate(contact = as.factor(contact)) |>
   mutate(month = as.factor(month)) |>
   mutate(poutcome = as.factor(poutcome)) |>
-  mutate(y = as.factor(y))
+  mutate(day = as.factor(day)) |>
+  mutate(y = ifelse(y == "yes", 1, 0))
 
 
 colnames(d1)[17] <- "y_termSubscribed"

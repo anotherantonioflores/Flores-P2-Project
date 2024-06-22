@@ -9,7 +9,7 @@
 <meta name="author" content="Antonio Flores">
 <meta name="dcterms.date" content="2025-01-06">
 
-<title>An example cleaning script</title>
+<title>Preparing data for analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">An example cleaning script</h1>
+<h1 class="title">Preparing data for analysis</h1>
 </div>
 
 
@@ -114,8 +114,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Setup</h1>
 <p>The following packages are needed for this data processing</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) <span class="co">#for loading Excel files</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co">#for data processing/cleaning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'dplyr'</code></pre>
@@ -130,9 +130,9 @@ Attaching package: 'dplyr'</code></pre>
 
     intersect, setdiff, setequal, union</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr) <span class="co">#for data processing/cleaning</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) <span class="co">#for nice visualization of data </span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) <span class="co">#to set paths</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>here() starts at C:/Users/Client/Documents/Flores-P2-Project</code></pre>
 </div>
@@ -147,7 +147,7 @@ Attaching package: 'dplyr'</code></pre>
 </section>
 <section id="check-data" class="level1">
 <h1>Check data</h1>
-<p>Examning metadata by accessing the codebook</p>
+<p>Examining metadata by accessing the codebook. This codebook was taken directly from the data repository housing the chosen dataset. The decision was made to keep this in a separate xlsx file from the dataset so that the dataset could remain in the identical form in which it was sourced (CSV format).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>codebook_location <span class="ot">&lt;-</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"raw-data"</span>,<span class="st">"codebook.xlsx"</span>)</span>
@@ -555,7 +555,7 @@ $ y         &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "no", "n
 </section>
 <section id="cleaning-the-data" class="level1">
 <h1>Cleaning the data</h1>
-<p>We are mainly converting character variables into factors so we can do some categorical analysis</p>
+<p>We are mainly converting character variables into factors so we can do some categorical analysis. I had initially included converting months to a numeric variable but realized that it was fine as a factor variable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">=</span> rawdata <span class="sc">|&gt;</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">job =</span> <span class="fu">as.factor</span>(job)) <span class="sc">|&gt;</span></span>
@@ -571,7 +571,10 @@ $ y         &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "no", "n
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">as.factor</span>(y))</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d1)[<span class="dv">17</span>] <span class="ot">&lt;-</span> <span class="st">"y_termSubscribed"</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      age                 job           marital          education    
  Min.   :18.00   blue-collar:9732   divorced: 5207   primary  : 6851  
@@ -597,14 +600,14 @@ $ y         &lt;chr&gt; "no", "no", "no", "no", "no", "no", "no", "no", "no", "n
  3rd Qu.:21.00   nov    : 3970   3rd Qu.: 319.0   3rd Qu.: 3.000  
  Max.   :31.00   apr    : 2932   Max.   :4918.0   Max.   :63.000  
                  (Other): 6060                                    
-     pdays          previous           poutcome       y        
- Min.   : -1.0   Min.   :  0.0000   failure: 4901   no :39922  
- 1st Qu.: -1.0   1st Qu.:  0.0000   other  : 1840   yes: 5289  
- Median : -1.0   Median :  0.0000   success: 1511              
- Mean   : 40.2   Mean   :  0.5803   unknown:36959              
- 3rd Qu.: -1.0   3rd Qu.:  0.0000                              
- Max.   :871.0   Max.   :275.0000                              
-                                                               </code></pre>
+     pdays          previous           poutcome     y_termSubscribed
+ Min.   : -1.0   Min.   :  0.0000   failure: 4901   no :39922       
+ 1st Qu.: -1.0   1st Qu.:  0.0000   other  : 1840   yes: 5289       
+ Median : -1.0   Median :  0.0000   success: 1511                   
+ Mean   : 40.2   Mean   :  0.5803   unknown:36959                   
+ 3rd Qu.: -1.0   3rd Qu.:  0.0000                                   
+ Max.   :871.0   Max.   :275.0000                                   
+                                                                    </code></pre>
 </div>
 </div>
 <p>All done, data is clean now.</p>

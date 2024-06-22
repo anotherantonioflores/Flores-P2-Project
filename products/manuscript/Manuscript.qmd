@@ -20,7 +20,7 @@ library(knitr)
 
 
 # Summary/Abstract
-This project will seek to identify a model for predicting consumer financial behavior using a dataset from a Portuguese Bank. 
+This project will seek to identify a model for predicting consumer financial behavior using a dataset from a Portuguese Bank. After the data has been cleaned and prepared for analysis, exploratory data analysis will be performed to gather more information regarding the shape, size, and behavior of different variables, to gauge their usefulness in a prediction model. Additionally, several different statistical tests will be implemented to identify which classes within different variables affect the outcome variable. Finally (_haven't started on this yet_), with some additional data preprocessing, this project will test different machine learning models and conclude with the resulting findings.
 
 {{< pagebreak >}}
 
@@ -28,7 +28,7 @@ This project will seek to identify a model for predicting consumer financial beh
 # Introduction 
 
 ## General Background Information
-Providing businesses with a model that will allow prioritization of consumers could save time and allow for a more accurate use of resources.   
+Providing businesses with a model that will allow prioritization of consumers and/or demographics has great potential in improving resource management and future marketing campaigns, as well as increasing efficient spending. 
 
 ## Description of data and data source
 The data was donated on 2/13/2012. It was collected from phone call marketing campaigns performed by a Portuguese banking institution.I have accessed this data from the UC Irvine Machine Learning Repository.
@@ -40,7 +40,7 @@ Among the variables are a handful of features relating to the marketing campaign
 
 ## Questions/Hypotheses to be addressed
 
-The research question I plan to address with my analysis is which features or combination of features are the best predictors of consumers making a deposit. The desired output of this analysis is a model which allows a financial institution to better prioritize/make decisions regarding future marketing campaigns. I don't currently have specific predictors in mind to begin with, as I plan to test all of the available features while also looking at some combinations or concatenation of features.
+The research question I plan to address with my analysis is: which features or combination of features are the best predictors of consumers making a deposit? The desired output of this analysis is a model which allows a financial institution to better prioritize/make decisions regarding future marketing campaigns. Currently, I plan to investigate all variables, but I am specifically interested in both job type, education and age. 
 
 
 
@@ -52,23 +52,15 @@ The research question I plan to address with my analysis is which features or co
 
 # Methods 
 
-I want to first perform some EDA to identify if there are any variables with extreme variation or conversely if there some patterns that can be seen already. Then I will test for correlation between different features and proceed from there.
+Cleaning -> This includes converting numeric variables to factors, changing column names, and converting the positive outcome varible to 1 and 0.
 
-
-## Schematic of workflow
-
-
-```{r}
-#| label: fig-schematic
-#| fig-cap: "A figure that is manually generated and shows some overview/schematic. This has nothing to do with the data, it's just a random one from one of our projects I found and placed here."
-#| echo: FALSE
-```
-
+Exploring -> Using different charts to identify outliers, abnormalities, relationships, and the general shape and feel of different variables. 
 
 
 
 ## Data aquisition
-Data retrieved from UCI ML Repository
+The dataset for this project was retrieved from UCI ML Repository in CSV form.
+Additionally, I created a codebook based on data from the same source.
 
 ## Data import and cleaning
 
@@ -108,7 +100,6 @@ str(raw)
 
 
 
-## Statistical analysis
 
 
 {{< pagebreak >}}
@@ -153,6 +144,54 @@ knitr::include_graphics(here("results","figures","education-barchart.png"))
 knitr::include_graphics(here("results","figures","age-balance-stratified.png"))
 ```
 
+@fig-result4 shows barplot of age data for the full dataset
+
+```{r}
+#| label: fig-result4
+#| fig-cap: "Age data for those with positive classifcation"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","yes-no-age.png"))
+```
+
+@fig-result3 shows barplot of age data for only those who subscribed to a term deposit
+
+```{r}
+#| label: fig-result3
+#| fig-cap: "Age data for those with positive classifcation"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","yes-age.png"))
+```
+
+
+@fig-result5 shows barplot of most common days of the month to record a positive outcome.
+
+```{r}
+#| label: fig-result5
+#| fig-cap: "Days of the month for positive outcomes"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","days-yes.png"))
+```
+
+
+@fig-result6 Job type for count of positive outcomes.
+
+```{r}
+#| label: fig-result6
+#| fig-cap: "Job type for count of positive outcomes."
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","jobs-count-yes.png"))
+```
+
+
+@fig-result7 Job type for percent of positive outcomes per job type.
+
+```{r}
+#| label: fig-result7
+#| fig-cap: "Job type for percent of positive outcomes per job type."
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","jobs-percent-yes.png"))
+```
+
 
 ## Basic statistical analysis
 
@@ -167,12 +206,12 @@ Example @tbl-resulttable2 shows a summary of a linear model fit.
 ```
 
 
-
+#WORK IN PROGRESS
 
 ## Full analysis
 
-
-
+_Pending Data Preprocessing and ML Modeling_
+_I plan to use recipies and some of the tinymodels for this section_
 
 
 {{< pagebreak >}}

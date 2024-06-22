@@ -1,17 +1,18 @@
 ---
 title: "Exploratory Data Analysis script"
-date: "2024-02-07"
+date: "2024-06-20"
 output: html_document
 author: Antonio Flores
 ---
 
-  
-  
+
 This Quarto file loads the cleaned data and does some exploring.
 
 # Setup
 Necessary libraries for this script.
 ```{r}
+#| echo: false
+#| output: false
 library(here) 
 library(dplyr)
 library(skimr)
@@ -19,17 +20,17 @@ library(ggplot2)
 library(scales)
 library(tidyr)
 library(forcats)
+library(corrplot)
 ```
 
 
 Loading the data.
 
 ```{r}
+#If this doesn't initially work, try restarting R and then proceeding
 data_location <- here::here("data","processed-data","processeddata1.rds")
 mydata <- readRDS(data_location)
 ```
-
-
 
 
 # Data exploration through tables
@@ -51,7 +52,7 @@ Histogram plots for some continuous outcomes.
 Age first.
 
 ```{r}
-p1 <- mydata %>% ggplot(aes(x=age)) + geom_histogram() 
+p1 <- mydata %>% ggplot(aes(x=age)) + geom_histogram()
 plot(p1)
 figure_file = here("results", "figures","age-distribution.png")
 ggsave(filename = figure_file, plot=p1) 
@@ -127,17 +128,13 @@ figure_file = here("results", "figures", "marital-barchart.png")
 ggsave(filename = figure_file, plot=p8) 
 ```
 
-Quick look at positive cases vs negative cases of outcome variable (y_termSubscribed)
-```{r}
-plot(mydata$y_termSubscribed)
-```
 
 
 Lets see how the age demographic differs between the population that subscribed to a term (y_termsubscribed=yes) vs the general population.
 
 ```{r}
 p9 = mydata |>
-  filter(y_termSubscribed == "yes") |>
+  filter(y_termSubscribed == 1) |>
   ggplot(aes(age))+
   geom_bar()+
   labs(title = "yes")
@@ -149,6 +146,15 @@ p10 = mydata |>
 
 p9
 p10
+
+
+#Comparing how age daa compares from those who subscribed to a term deposit and those
+#that did not
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=age))+
+  facet_wrap(~y_termSubscribed, nrow=2)
+
+
 ```
 
 
@@ -156,7 +162,7 @@ Now, lets assess the highest job categories that are labeled as subscribing to a
 
 ```{r}
 p11 = mydata |>
-  filter(y_termSubscribed == "yes") |>
+  filter(y_termSubscribed == 1) |>
   ggplot(aes(x=fct_infreq(job)))+
   geom_bar()+
   coord_flip()+
@@ -164,4 +170,101 @@ p11 = mydata |>
 
 p11
 ```
+
+
+Trying to explore some additional aspects of the data
+
+This shows the relationship between age and balance, grouped by education
+```{r}
+ggplot(data=mydata)+
+  geom_point(mapping =aes(x=age, y=balance))+
+  facet_wrap(~education, nrow=2)
+  
+```
+
+Next, we can assess how age relates the number of jobs, grouped by job type.
+```{r}
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=age))+
+  facet_wrap(~job, nrow=2)
+```
+
+Digging into the Duration variable, we can see some very extreme values affecting this variable
+```{r}
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=duration))
+
+boxplot(mydata$duration)
+  
+```
+
+
+Taking a quick look at some of the binary variables in the dataset
+```{r}
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=default))
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=housing))
+ggplot(data=mydata)+
+  geom_bar(mapping =aes(x=loan))
+```
+
+
+
+Taking a look at frequency counts across different variables of interest
+```{r}
+hist(numericvar$age)
+hist(numericvar$balance)
+hist(numericvar$duration)
+hist(numericvar$campaign)
+hist(numericvar$pdays)
+hist(numericvar$previous)
+```
+
+
+Examining which days are most common for recording a positive outcome (subscribing to 
+a term deposit). Looks like later in the month has higher frequencies.
+
+```{r}
+p12= mydata |>
+  filter(y_termSubscribed == 1) |>
+  ggplot(aes(day))+
+  geom_bar()+
+  labs(title = "yes")
+
+p12
+```
+
+
+
+We've analyzed which job types had the MOST positive outcomes, but now we want to 
+compare which job type had the greates PERCENT of positive outcomes.
+
+```{r}
+posjob = mydata %>% 
+  filter(y_termSubscribed==1) %>% 
+  count(y_termSubscribed, job, sort=TRUE)
+
+jobtable = mydata %>% count(job)
+
+pctjob = posjob %>% 
+  left_join(jobtable, by ="job")
+
+
+colnames(pctjob)[3] <- "numofYES"
+colnames(pctjob)[4] <- "numofBOTH"
+
+ggplot(pctjob, aes(x=reorder(job, numofYES), y=numofYES, fill=numofYES))+
+  geom_bar(stat="identity")+
+  coord_flip()
+  
+ggplot(pctjob, aes(x=reorder(job, (numofYES/numofBOTH)), y=(numofYES/numofBOTH)))+
+  geom_bar(stat="identity")+
+  coord_flip()
+
+
+```
+On the first figure, we can see that jobs with the most positive outcomes are management, technician, and blue-collar, but on the second chart we can see that the job-types with the
+highest percentages are 'student', 'retired', and 'unemployed.' There appears to be a noticable different between the total number of positive cases, and the job types which are most commonly recording positive cases.
+
 
