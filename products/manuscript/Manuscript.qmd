@@ -1,5 +1,5 @@
 ---
-title: "Working Title: Predicting Customer Behavior Using a Portuguese Financial Institution Dataset "
+title: "Predicting Customer Behavior Using a Portuguese Financial Institution Dataset "
 subtitle: ""
 author: Antonio Flores
 date: "`r Sys.Date()`"
@@ -12,60 +12,46 @@ bibliography: ../../assets/dataanalysis-references.bib
 csl: ../../assets/apa.csl
 ---
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning = FALSE}
 library(here)
 library(knitr)
 ```
 
-
-
 # Summary/Abstract
-This project will seek to identify a model for predicting consumer financial behavior using a dataset from a Portuguese Bank. After the data has been cleaned and prepared for analysis, exploratory data analysis will be performed to gather more information regarding the shape, size, and behavior of different variables, to gauge their usefulness in a prediction model. Additionally, several different statistical tests will be implemented to identify which classes within different variables affect the outcome variable. Finally (_haven't started on this yet_), with some additional data preprocessing, this project will test different machine learning models and conclude with the resulting findings.
+
+This project will seek to identify a model for predicting consumer financial behavior using a dataset from a Portuguese Bank. After the data has been cleaned and prepared for analysis, exploratory data analysis will be performed to gather more information regarding the shape, size, and behavior of different variables, to gauge their usefulness in a prediction model. Additionally, several different statistical tests will be implemented to identify which classes within different variables affect the outcome variable. Finally this project will test different machine learning models and conclude with the resulting findings.
 
 {{< pagebreak >}}
 
-
-# Introduction 
+# Introduction
 
 ## General Background Information
-Providing businesses with a model that will allow prioritization of consumers and/or demographics has great potential in improving resource management and future marketing campaigns, as well as increasing efficient spending. 
+
+Providing businesses with a model that will allow prioritization of consumers and/or demographics has great potential in improving resource management and future marketing campaigns, as well as increasing efficient spending. This particular project will utilize Classification Prediction. Unlike Regression Prediction which will attempt to predict a continuous value (e.g., x amount of dollars, x amount of cells), Classification Prediction seeks to train a model that can correctly predict a classification (e.g., True/False, Success/Failure) based on the given predictors. In our case, our y variable or response variable is a binary variable, Yes/No, answering whether or not a customer subscribed to a term deposit.
 
 ## Description of data and data source
+
 The data was donated on 2/13/2012. It was collected from phone call marketing campaigns performed by a Portuguese banking institution.I have accessed this data from the UC Irvine Machine Learning Repository.
 
-There are 45,212 records, and includes: age, marital status, job, education,details related to the phone call, as well as answers related to questions about past credit history. Additionally, the classification variable is whether or not the person subscribed to a term deposit. There are 17 features in total.
+There are 45,212 records,17 columns/variables which include: age, marital status, job, education,details related to the phone call, as well as answers related to questions about past credit history. Additionally, as mentioned, the classification variable is whether or not the person subscribed to a term deposit.
 
 Among the variables are a handful of features relating to the marketing campaign itself. For example, included are the day, month, and duration of the call, the number of contacts performed during the campaign (campaign), the number of days since the client was last contacted (pdays), the number of contacts performed before this campaign (previous), and finally the outcome of precious marketing campaigns (poutcome).
 
-
 ## Questions/Hypotheses to be addressed
 
-The research question I plan to address with my analysis is: which features or combination of features are the best predictors of consumers making a deposit? The desired output of this analysis is a model which allows a financial institution to better prioritize/make decisions regarding future marketing campaigns. Currently, I plan to investigate all variables, but I am specifically interested in both job type, education and age. 
-
-
-
-
-
+The research question I plan to address with my analysis is: which features or combination of features are the best predictors of consumers making a deposit? The desired output of this analysis is a model which allows a financial institution to better prioritize/make decisions regarding future marketing campaigns. Currently, I plan to investigate all variables, but I am specifically interested in both job type, education and age.
 
 {{< pagebreak >}}
 
-
-# Methods 
-
-Cleaning -> This includes converting numeric variables to factors, changing column names, and converting the positive outcome varible to 1 and 0.
-
-Exploring -> Using different charts to identify outliers, abnormalities, relationships, and the general shape and feel of different variables. 
-
-
+# Methods
 
 ## Data aquisition
-The dataset for this project was retrieved from UCI ML Repository in CSV form.
-Additionally, I created a codebook based on data from the same source.
+
+The dataset for this project was retrieved from UCI ML Repository in CSV form. Additionally, I created a codebook based on data from the same source.
 
 ## Data import and cleaning
 
 ### Reading in the Data
-
 
 ```{r}
 #| label: tbl-summarytable1
@@ -73,97 +59,86 @@ Additionally, I created a codebook based on data from the same source.
 #| echo: FALSE
 data_location <- here::here("data","raw-data","bank-full.csv")
 raw=read.csv(data_location, header = TRUE, sep=";")
-head(raw)
+kable(head(raw[1:5]))
+
+kable(head(raw[6:10]))
 ```
 
 ### Dimensions:
-dim(raw)
 
-```{r}
-#| label: tbl-summarytable2
-#| tbl-cap: "Data Dimensions"
-#| echo: FALSE
-dim(raw)
+Rows: 45, 211\
+Columns: 17
+
+### Describing data
+
+```{r, echo=FALSE, message=FALSE, warning = FALSE}
+data_location <- here::here("results","tables","describetbl1.rds")
+describe1 <- readRDS(data_location)
+describe1
 ```
 
+### Cleaning Data
 
-### Describing raw data
-str(raw)
+There were several different data cleaning methods that were experimented with in order to find the best way to prepare the data for modeling. First, I converted several variables to factors as they had been read in as character variables, or strings. Next I tried to use the DummyVars tool to convert every categorical variable to a dummy value but this made modeling difficult due to a large amount of binary variables. Instead I proceeded with converting the categorical variables to numeric values while maintaining their factor status. I also created a dataset with these numeric values that were not factors. These were the two primary dataset I used for my modeling. Finally I created a dataset stripping the categorical values of their attributes, this was solely created to allow for my corrplot to work.
 
-```{r}
-#| label: tbl-summarytable3
-#| tbl-cap: "Data Description"
-#| echo: FALSE
-str(raw)
-```
+### Removing Initial Predictors
 
-
-
-
-
+I removed the 'Duration' variable due to a warning I discovered on the site hosting this dataset initially: "Important note: this attribute highly affects the output target (e.g., if duration=0 then y='no'). Yet, the duration is not known before a call is performed. Also, after the end of the call y is obviously known. Thus, this input should only be included for benchmark purposes and should be discarded if the intention is to have a realistic predictive model."(@misc_bank_marketing_222) Due to this new information I decided to remove all the variables related to this, which included 'campaign', 'pdays', 'previous', and 'poutcome.' Bringing our new total number of predictors to 11.
 
 {{< pagebreak >}}
-
 
 # Results
 
 ## Exploratory/Descriptive analysis
 
+In this section we will be exploring the data using different charts to identify outliers, abnormalities, relationships, and the general shape and feel of different variables.
 
 
 
-@fig-result shows a boxplot figure comparing balance levels across job types.
-
-```{r}
-#| label: fig-result
-#| fig-cap: "Job type and bank account balance"
-#| echo: FALSE
-knitr::include_graphics(here("results","figures","job-balance-scatter.png"))
-```
-
-
-
-@fig-result1 shows a bar chart showing education levels of the data.
+@fig-result1 shows the distribution of the 'Age' variable.
 
 ```{r}
 #| label: fig-result1
-#| fig-cap: "Education level"
+#| fig-cap: "Age Histogram"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","age-distribution.png"))
+```
+While this shows a slight skew to the left, if we account for the extreme value on the right, this data seems to be fairly normally distributed.
+
+
+
+@fig-result2 shows the distribution of the 'Education' variable
+
+```{r}
+#| label: fig-result2
+#| fig-cap: "Education level Bar Chart"
 #| echo: FALSE
 knitr::include_graphics(here("results","figures","education-barchart.png"))
 ```
 
-
-
-
-@fig-result2 shows a scatter plot figure produced by one of the R scripts.
+@fig-result3 shows the most common 'Job' types in our data
 
 ```{r}
-#| label: fig-result2
+#| label: fig-result3
+#| fig-cap: "Most Common Job Types"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","job-barchart.png"))
+```
+
+Interestingly, Blue-collar and Management are the two most common job types. This play an important role later in our analysis due to the percent of the data these two categories represent.
+
+
+@fig-result4 shows a scatter plot figure produced by one of the R scripts.
+
+```{r}
+#| label: fig-result4
 #| fig-cap: "Age and bank account balance stratified by marital status"
 #| echo: FALSE
 knitr::include_graphics(here("results","figures","age-balance-stratified.png"))
 ```
 
-@fig-result4 shows barplot of age data for the full dataset
 
-```{r}
-#| label: fig-result4
-#| fig-cap: "Age data for those with positive classifcation"
-#| echo: FALSE
-knitr::include_graphics(here("results","figures","yes-no-age.png"))
-```
-
-@fig-result3 shows barplot of age data for only those who subscribed to a term deposit
-
-```{r}
-#| label: fig-result3
-#| fig-cap: "Age data for those with positive classifcation"
-#| echo: FALSE
-knitr::include_graphics(here("results","figures","yes-age.png"))
-```
-
-
-@fig-result5 shows barplot of most common days of the month to record a positive outcome.
+@fig-result5 shows a barplot of most common days of the month to record a positive outcome.
 
 ```{r}
 #| label: fig-result5
@@ -171,65 +146,115 @@ knitr::include_graphics(here("results","figures","yes-age.png"))
 #| echo: FALSE
 knitr::include_graphics(here("results","figures","days-yes.png"))
 ```
+While there doesn't appear to be a significant trend, we can clearly see that the 30th of the month stands out as being a day of interest, especially compared to other days of the months. 
 
 
-@fig-result6 Job type for count of positive outcomes.
+@fig-result6 shows potential correlation between different variales.
 
 ```{r}
 #| label: fig-result6
-#| fig-cap: "Job type for count of positive outcomes."
+#| fig-cap: "Correlation Matrix"
 #| echo: FALSE
-knitr::include_graphics(here("results","figures","jobs-count-yes.png"))
+knitr::include_graphics(here("results","figures","corplot.png"))
 ```
 
-
-@fig-result7 Job type for percent of positive outcomes per job type.
-
-```{r}
-#| label: fig-result7
-#| fig-cap: "Job type for percent of positive outcomes per job type."
-#| echo: FALSE
-knitr::include_graphics(here("results","figures","jobs-percent-yes.png"))
-```
-
+The biggest takeaways from our Exploratory Data Analysis is that most variables are fairly normally distributed due to the size of the data, and most variable are not correlated to each other, with one exception ('Age' and 'Marital')
 
 ## Basic statistical analysis
 
-Example @tbl-resulttable4 shows a summary of a linear model fit.
+Before we begin with the machine learning analysis, I sought to test a few variables of interest ('Age', 'Job') in their significance of affecting the response variable. As mentioned previously, our response variable is a binary value (Yes/No), which means that we need to use a logistic regression model instead of a linear regression model.
+
+Below are the results for our first logistic model fit with Age as Predictor.
 
 ```{r}
-#| label: tbl-resulttable4
-#| tbl-cap: "Logistic regression model fit table."
+#| label: basicmodel1
+#| fig-cap: "Logistic Regression with Age as Predictor"
 #| echo: FALSE
-resulttable4 = readRDS(here("results","tables","resulttable4.rds"))
-knitr::kable(resulttable4)
+
+data_location <- here::here("results","tables","basicmodel1.rds")
+basic1 <- readRDS(data_location)
+kable(basic1)
 ```
 
+Below are the results for our second logistic model fit with Job as Predictor.
 
-#WORK IN PROGRESS
+```{r}
+#| label: basicmodel2
+#| fig-cap: "Logistic Regression with Job as Predictor"
+#| echo: FALSE
+
+data_location <- here::here("results","tables","basicmodel2.rds")
+basic2 <- readRDS(data_location)
+kable(basic2)
+```
+
+As expected, both predictors are very significant. We will proceed to the Machine Learning portion of this project.
 
 ## Full analysis
+So far, I have focused on the MARS model, KNN, and Logistic Regression to determine the prediction model for this project. As highlighted in the data cleaning section, there were two datasets I was focusing on. One that had numeric factors for the categorical predictors, and one that had just numeric variables for the categorical predictors. I decided to examine both so there are a total of 6 different runs recorded below, 3 runs for each dataset. 
 
-_Pending Data Preprocessing and ML Modeling_
-_I plan to use recipies and some of the tinymodels for this section_
 
+@tbl-resulttable1 displays the Accuracy and Kappa scores for the first three model runs using the predictors that are numeric and are not factors.
+```{r}
+#| label: tbl-resulttable1
+#| tbl-cap: "Performance Results for Models using Numeric (unfactored) Predictors"
+#| echo: FALSE
+resulttable1 = readRDS(here("results","tables","perftable1.rds"))
+knitr::kable(resulttable1)
+```
+
+@tbl-resulttable2 displays the Accuracy and Kappa scores for the first three model runs using the predictors that are numeric and are not factors.
+```{r}
+#| label: tbl-resulttable2
+#| tbl-cap: "Performance Results for Models using Numeric Factored Predictors"
+#| echo: FALSE
+resulttable2 = readRDS(here("results","tables","perftable2.rds"))
+knitr::kable(resulttable2)
+```
+
+In terms of accuracy, all 6 model runs seem to have almost identical accuracy. They do tend to differ quite a bit in terms of Kappa...
+
+
+Finally, we can examine which predictors specifically improved prediction the most. 
+
+The following figures were taken from the Factored Numeric model runs.
+
+@fig-result7 shows the Predictors that had the most impact on the Mars Model
+
+```{r}
+#| label: fig-result7
+#| fig-cap: "Mars Model Variables of Importance"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","importantMM2.png"))
+```
+
+Housing2 indicates that the person does have a housing loan.\
+Loan2 indicates that the person does have a personal loan for an unspecified purpose.\
+Job9 indicates that the person is a Student.\
+education 3 indicates that the person has attained Tertiary Education.\
+
+
+@fig-result8 shows the Predictors that had the most impact on the KNN Model
+
+```{r}
+#| label: fig-result8
+#| fig-cap: "KNN Variables of Importance"
+#| echo: FALSE
+knitr::include_graphics(here("results","figures","importantKNN2.png"))
+```
 
 {{< pagebreak >}}
-
 
 # Discussion
 
 ## Summary and Interpretation
-
-
+So far all of the models I have chosen have shown considerable predictive ability. I plan to tune the existing three models while also trying out Random Forest as well as potentially one more model. 
 ## Strengths and Limitations
 
 ## Conclusions
+I will conclude with choosing the model that seems the most robust, accurate, and flexible, as well as determining which variables have the greatest predictive ability and which levels within those predictors stand out as particularly effective in classifying correctly.
 
 
 {{< pagebreak >}}
 
 # References
-
-
-

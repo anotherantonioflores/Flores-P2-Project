@@ -21,6 +21,7 @@ library(scales)
 library(tidyr)
 library(forcats)
 library(corrplot)
+library(corrplot)
 ```
 
 
@@ -40,10 +41,63 @@ Creating a summary table.
 ```{r}
 summary_df = skimr::skim(mydata)
 print(summary_df)
+
 # save to file
 summarytable_file = here("results", "tables", "summarytable1.rds")
 saveRDS(summary_df, file = summarytable_file)
 ```
+
+
+
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+data_location <- here::here("data","processed-data","processeddata1.rds")
+mydata1 <- readRDS(data_location)
+
+mydata1 = mydata1 %>% 
+  select(age, job, marital, education, default, balance, housing, loan, contact, day, month, y_termSubscribed)
+
+str_summary <- capture.output(str(mydata1))
+
+describetbl1 = kable(str_summary, caption = "Summary of predictors") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F)
+
+summarytable_file = here("results", "tables", "describetbl1.rds")
+saveRDS(describetbl1, file = summarytable_file)
+
+
+describetbl1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Data exploration through figures
 
@@ -179,31 +233,11 @@ p11
 ```
 
 
-Trying to explore some additional aspects of the data
 
-This shows the relationship between age and balance, grouped by education
-```{r}
-ggplot(data=mydata)+
-  geom_point(mapping =aes(x=age, y=balance))+
-  facet_wrap(~education, nrow=2)
-  
-```
 
-Next, we can assess how age relates the number of jobs, grouped by job type.
-```{r}
-ggplot(data=mydata)+
-  geom_bar(mapping =aes(x=age))+
-  facet_wrap(~job, nrow=2)
-```
 
-Digging into the Duration variable, we can see some very extreme values affecting this variable
-```{r}
-ggplot(data=mydata)+
-  geom_bar(mapping =aes(x=duration))
 
-boxplot(mydata$duration)
-  
-```
+
 
 
 Taking a quick look at some of the binary variables in the dataset
@@ -220,12 +254,8 @@ ggplot(data=mydata)+
 
 Taking a look at frequency counts across different variables of interest
 ```{r}
-hist(numericvar$age)
-hist(numericvar$balance)
-hist(numericvar$duration)
-hist(numericvar$campaign)
-hist(numericvar$pdays)
-hist(numericvar$previous)
+hist(mydata$age)
+hist(mydata$balance)
 ```
 
 
@@ -247,7 +277,7 @@ ggsave(filename = figure_file, plot=p12)
 
 
 We've analyzed which job types had the MOST positive outcomes, but now we want to 
-compare which job type had the greates PERCENT of positive outcomes.
+compare which job type had the greatest PERCENT of positive outcomes.
 
 ```{r}
 posjob = mydata %>% 
@@ -263,8 +293,9 @@ pctjob = posjob %>%
 colnames(pctjob)[3] <- "numofYES"
 colnames(pctjob)[4] <- "numofBOTH"
 
+```
 
-
+```{r}
 p13 = ggplot(pctjob, aes(x=reorder(job, numofYES), y=numofYES, fill=numofYES))+
   geom_bar(stat="identity")+
   coord_flip()
@@ -284,5 +315,29 @@ p14
 ```
 On the first figure, we can see that jobs with the most positive outcomes are management, technician, and blue-collar, but on the second chart we can see that the job-types with the
 highest percentages are 'student', 'retired', and 'unemployed.' There appears to be a noticable different between the total number of positive cases, and the job types which are most commonly recording positive cases.
+
+
+
+```{r}
+data_location <- here::here("data","processed-data","processeddata5.rds")
+mydata <- readRDS(data_location)
+
+numericonly = mydata %>% 
+  select(!y_termSubscribed)
+
+
+# Specify the file path where the image will be saved
+file_path <- here("results", "figures","corplot.png")
+
+# Open a PNG graphics device
+png(filename = file_path, width = 800, height = 600)
+
+# Create the correlation plot
+corrplot(cor(numericonly))
+
+# Close the graphics device
+dev.off()
+```
+
 
 
