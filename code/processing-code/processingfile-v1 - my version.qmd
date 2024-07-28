@@ -138,6 +138,8 @@ d3 = processeddata1 |>
   mutate(loan = as.factor(unclass(loan)))
   
  
+
+
 summary(d3$education)
 ```
 
