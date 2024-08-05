@@ -1,3 +1,4 @@
 # Assets
 
-This folder will contain all static content from outside sources.
+This folder contains all refrenced content from external sources.\
+Also see APA styling here
